@@ -1,0 +1,68 @@
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: thelastpickle/cassandra-reaper
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+podAnnotations: {}
+podLabels: {}
+
+deploymentAnnotations: {}
+
+service:
+  type: ClusterIP
+  port: 8080
+  annotations: {}
+  labels: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  labels: {}
+  hosts:
+    - host: reaper.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+reaper:
+  storageType: cassandra
+  cassandra:
+    clusterName: my-cassandra
+    contactPoints:
+      - host: 192.10.22.28
+        port: 9042
+    keyspace: reaper_db
+    localDc: DC1
+    auth:
+      enabled: true
+      username: reaper_user
+      password: reaper_pass
+
+extraEnv: {}
+extraSecretEnv: {}
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+extraLabels: {}
+extraAnnotations: {}

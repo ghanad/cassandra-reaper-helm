@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cassandra-reaper
+description: Minimal Helm chart for deploying Cassandra Reaper on Kubernetes with Cassandra backend support, designed for GitOps workflows.
+type: application
+version: 0.1.0
+appVersion: "latest"
