@@ -1,0 +1,43 @@
+name: Helm Check
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/helm-check.yml"
+      - "cassandra-reaper/**"
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - ".github/workflows/helm-check.yml"
+      - "cassandra-reaper/**"
+
+jobs:
+  helm-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Lint chart
+        run: helm lint ./cassandra-reaper
+
+      - name: Render default manifests
+        run: helm template reaper ./cassandra-reaper > /tmp/reaper-default.yaml
+
+      - name: Render optional manifests
+        run: |
+          helm template reaper ./cassandra-reaper \
+            --set ingress.enabled=true \
+            --set ingress.className=nginx \
+            --set ingress.hosts[0].host=reaper.example.com \
+            --set ingress.hosts[0].paths[0].path=/ \
+            --set ingress.hosts[0].paths[0].pathType=Prefix \
+            --set admin.enabled=true \
+            --set admin.service.enabled=true \
+            > /tmp/reaper-optional.yaml
