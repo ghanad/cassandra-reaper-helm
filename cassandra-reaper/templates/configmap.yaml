@@ -10,6 +10,7 @@ metadata:
   {{- end }}
 data:
   REAPER_STORAGE_TYPE: {{ .Values.reaper.storageType | quote }}
+  REAPER_AUTH_ENABLED: {{ ternary "true" "false" .Values.reaper.auth.enabled | quote }}
   REAPER_CASS_CLUSTER_NAME: {{ .Values.reaper.cassandra.clusterName | quote }}
   REAPER_CASS_CONTACT_POINTS: {{ .Values.reaper.cassandra.contactPoints | toJson | quote }}
   REAPER_CASS_KEYSPACE: {{ .Values.reaper.cassandra.keyspace | quote }}

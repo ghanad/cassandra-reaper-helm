@@ -42,3 +42,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- default "default" .Values.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "cassandra-reaper.hasSecretEnv" -}}
+{{- $hasReaperAuth := and .Values.reaper.auth.enabled .Values.reaper.auth.username .Values.reaper.auth.password -}}
+{{- $hasReadOnlyAuth := and .Values.reaper.auth.readOnly.username .Values.reaper.auth.readOnly.password -}}
+{{- $hasJwtSecret := ne (default "" .Values.reaper.auth.jwtSecret) "" -}}
+{{- $hasCassAuth := and .Values.reaper.cassandra.auth.enabled .Values.reaper.cassandra.auth.username .Values.reaper.cassandra.auth.password -}}
+{{- $hasExtraSecretEnv := gt (len .Values.extraSecretEnv) 0 -}}
+{{- if or $hasReaperAuth $hasReadOnlyAuth $hasJwtSecret $hasCassAuth $hasExtraSecretEnv -}}
+true
+{{- end -}}
+{{- end -}}

@@ -5,7 +5,7 @@ replicaCount: 1
 
 image:
   repository: thelastpickle/cassandra-reaper
-  tag: latest
+  tag: 4.0.1
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -40,17 +40,54 @@ ingress:
 
 reaper:
   storageType: cassandra
+  auth:
+    enabled: true
+    username: change-me-admin
+    password: change-me-admin-password
+    jwtSecret: ""
+    readOnly:
+      username: ""
+      password: ""
   cassandra:
-    clusterName: my-cassandra
+    clusterName: change-me-cassandra-cluster
     contactPoints:
-      - host: 192.10.22.28
+      - host: cassandra.default.svc.cluster.local
         port: 9042
     keyspace: reaper_db
-    localDc: DC1
+    localDc: change-me-dc
     auth:
       enabled: true
-      username: reaper_user
-      password: reaper_pass
+      username: change-me-cassandra-user
+      password: change-me-cassandra-password
+
+probes:
+  readiness:
+    path: /ping
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  liveness:
+    path: /ping
+    initialDelaySeconds: 60
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 6
+  startup:
+    path: /ping
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+
+admin:
+  enabled: false
+  port: 8081
+  service:
+    enabled: false
+    type: ClusterIP
+    annotations: {}
+    labels: {}
 
 extraEnv: {}
 extraSecretEnv: {}
